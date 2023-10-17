@@ -1,8 +1,3 @@
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
 rootProject.name = "mcsm"
+
+include("core")

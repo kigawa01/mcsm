@@ -1,4 +1,4 @@
-package net.kigawa.mcsm.util
+package net.kigawa.mcsm.util.context
 
 object Context {
   private val values = mutableListOf<ContextValue<*>>()
