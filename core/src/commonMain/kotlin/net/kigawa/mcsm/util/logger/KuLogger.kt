@@ -1,5 +1,6 @@
 package net.kigawa.mcsm.util.logger
 
 interface KuLogger {
-  fun error(message: String)
+  fun info(message: String)
+  fun warning(message: String)
 }
