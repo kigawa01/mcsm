@@ -4,5 +4,6 @@ enum class OSType {
   WINDOWS,
   MAC,
   LINUX,
+  UBUNTU,
   OTHER
 }

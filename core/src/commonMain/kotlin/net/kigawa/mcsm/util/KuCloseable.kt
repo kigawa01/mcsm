@@ -4,4 +4,3 @@ package net.kigawa.mcsm.util
 interface KuCloseable : AutoCloseable {
   override fun close()
 }
-
