@@ -2,8 +2,8 @@ package net.kigawa.mcsm
 
 import net.kigawa.mcsm.option.Option
 import net.kigawa.mcsm.option.OptionStore
-import net.kigawa.mcsm.util.platform.PlatFormInstance
-import kotlin.system.exitProcess
+import net.kigawa.mcsm.util.Kutil
+import net.kigawa.mcsm.util.PlatFormInstance
 
 class Main(
   private val platFormInstance: PlatFormInstance,
@@ -19,19 +19,19 @@ class Main(
       if (opt == null) {
         platFormInstance.logger.warning("option $arg is not found")
         help()
-        exitProcess(1)
+        platFormInstance.exitProcess(1)
       }
 
       if (argList.isEmpty()) {
         platFormInstance.logger.warning("option args not enough")
         help()
-        exitProcess(1)
+        platFormInstance.exitProcess(1)
       }
       val value = argList.removeAt(0)
 
       optionStore.add(opt, value)
     }
-    help()
+    Mcsm(optionStore).start()
   }
 
   private fun help() {
@@ -39,8 +39,10 @@ class Main(
     platFormInstance.logger.info("----- options -----")
     Option.entries.forEach {
       platFormInstance.logger.info(
-        "name: %-20s - env: %-15s - default: %-10s | ${it.description}"
-          .format("${it.optName} / ${it.shortName}", it.name, it.defaultValue)
+        "name: ${Kutil.fillStr("{$it.optName} / ${it.shortName}",20)}" +
+            " - env: ${Kutil.fillStr(it.name,15)}" +
+            " - default: ${Kutil.fillStr(it.defaultValue,10)}" +
+            " | ${it.description}"
       )
     }
   }
