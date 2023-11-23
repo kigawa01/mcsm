@@ -13,7 +13,10 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  commonMainImplementation("org.jetbrains.kotlin:kotlin-stdlib")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib")
+  commonTestImplementation(kotlin("test"))
+  commonTestImplementation(platform("org.junit:junit-bom:5.10.1"))
+  commonTestImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 kotlin {
@@ -50,4 +53,11 @@ kotlin {
     val commonTest by getting
   }
 }
-
+tasks {
+  test {
+    useJUnitPlatform()
+    testLogging {
+      events("passed", "skipped", "failed")
+    }
+  }
+}
