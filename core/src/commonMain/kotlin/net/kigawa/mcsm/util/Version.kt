@@ -3,11 +3,14 @@ package net.kigawa.mcsm.util
 class Version(
   private val strVersion: String,
 ) {
-  fun isAfter(before: Version) {
+  fun isAfter(before: Version): Boolean {
     val ownIntVer = intVersion()
     before.intVersion().forEachIndexed { index, value ->
-      val own = ownIntVer.getOrNull(index)
+      val own = ownIntVer.getOrNull(index) ?: return false
+      if (own == value) return@forEachIndexed
+      return own > value
     }
+    return false
   }
 
   fun intVersion(): List<Int> {
