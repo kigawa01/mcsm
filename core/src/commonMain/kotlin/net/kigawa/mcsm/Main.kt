@@ -1,6 +1,5 @@
 package net.kigawa.mcsm
 
-import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.util.Kutil
 import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.PlatFormInstance
@@ -8,10 +7,10 @@ import net.kigawa.mcsm.util.PlatFormInstance
 class Main(
   private val platFormInstance: PlatFormInstance,
 ) {
-  private val optionStore = OptionStore(platFormInstance)
-  private val rsync = Rsync(optionStore, platFormInstance.logger)
-  private val mcsm = Mcsm(rsync)
+  private val optionStore = OptionStore()
+  private val mcsm = Mcsm(platFormInstance.logger, optionStore)
   fun main(args: Array<String>) {
+    platFormInstance.logger.info("start mcsm")
     val argList = mutableListOf(*args)
 
     while (argList.isNotEmpty()) {

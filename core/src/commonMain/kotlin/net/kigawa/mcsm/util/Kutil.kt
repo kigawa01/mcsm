@@ -16,16 +16,32 @@ object Kutil {
 }
 
 @OptIn(ExperimentalContracts::class, ExperimentalStdlibApi::class)
-inline fun <T, R> T.tryCatch(block: (T) -> R): R {
+inline fun <T, R, reified E : Throwable> T.tryCatch(
+  block: (self: T) -> R,
+  catch: (self: T, e: E) -> R = { _, e -> throw e },
+  finally: (self: T, e: E?, result: R?) -> Unit = { self, _, _ ->
+    if (self is KuCloseable) self.close()
+    if (self is AutoCloseable) self.close()
+  },
+): R {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
   }
+  var exception: E? = null
+  var result: R? = null
   try {
-    return block(this)
+    return block(this).also { result = it }
+
   } catch (e: Throwable) {
+    if (e is E) return e
+      .also { exception = it }
+      .let { catch(this, it) }
+      .also { result = it }
     throw e
+
   } finally {
-    if (this is KuCloseable) close()
-    if (this is AutoCloseable) close()
+    finally(this, exception, result)
   }
 }
+
+inline fun <T, R> T.tryCatch(block: (self: T) -> R): R = tryCatch<T, R, Throwable>(block)

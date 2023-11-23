@@ -13,6 +13,7 @@ enum class Option(
     "resource", "r", "rsync resource", "resource"
   ),
   RSYNC_TARGET("target", "t", "rsync target", "target"),
+  RSYNC_PERIOD("period", "p", "rsync period(s)", "30"),
   ;
 
   companion object {

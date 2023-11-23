@@ -5,4 +5,9 @@ actual object KutilPlatform {
   actual fun getSystemProperty(name: String): String {
     TODO("Not yet implemented")
   }
+
+  actual fun getEnv(name: String): String? {
+    TODO("Not yet implemented")
+  }
+
 }

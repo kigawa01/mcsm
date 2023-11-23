@@ -9,7 +9,7 @@ class BufferedReaderIo(
     bufferedReader.close()
   }
 
-  override fun readLine(): String {
+  override fun readLine(): String? {
     return bufferedReader.readLine()
   }
 }

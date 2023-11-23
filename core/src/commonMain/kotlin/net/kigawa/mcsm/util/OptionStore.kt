@@ -2,9 +2,7 @@ package net.kigawa.mcsm.util
 
 import net.kigawa.mcsm.Option
 
-class OptionStore(
-  private val platFormInstance: PlatFormInstance,
-) {
+class OptionStore {
   private val options = mutableMapOf<Option, String>()
 
   fun add(option: Option, value: String) {
@@ -13,7 +11,7 @@ class OptionStore(
 
 
   fun get(option: Option): String = options[option]
-    ?: platFormInstance.getEnv(option.name)
+    ?: KutilPlatform.getEnv(option.name)
     ?: option.defaultValue
 
 }

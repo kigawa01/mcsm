@@ -15,8 +15,6 @@ repositories {
 dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib")
   commonTestImplementation(kotlin("test"))
-  commonTestImplementation(platform("org.junit:junit-bom:5.10.1"))
-  commonTestImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 kotlin {
@@ -33,9 +31,6 @@ kotlin {
     }
   }
   jvm("jvm") {
-    application {
-      mainClass.set("net.kigawa.mcsm.MainKt")
-    }
   }
 
   sourceSets {
@@ -47,6 +42,7 @@ kotlin {
       dependencies {
         implementation("net.kigawa.kutil:log:2.0")
       }
+
     }
     val jvmTest by getting
     val commonMain by getting
@@ -58,6 +54,11 @@ tasks {
     useJUnitPlatform()
     testLogging {
       events("passed", "skipped", "failed")
+    }
+  }
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+      jvmTarget = "${JavaVersion.VERSION_11}"
     }
   }
 }

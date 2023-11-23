@@ -5,9 +5,7 @@ import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
   val platFormInstance = PlatFormInstance(
-    JvmLogger(),
-    { System.getenv(it) },
-    { exitProcess(it) }
-  )
+    JvmLogger()
+  ) { exitProcess(it) }
   Main(platFormInstance).main(args)
 }
