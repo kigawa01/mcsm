@@ -1,14 +1,16 @@
 package net.kigawa.mcsm
 
-import net.kigawa.mcsm.option.Option
-import net.kigawa.mcsm.option.OptionStore
+import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.util.Kutil
+import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.PlatFormInstance
 
 class Main(
   private val platFormInstance: PlatFormInstance,
 ) {
   private val optionStore = OptionStore(platFormInstance)
+  private val rsync = Rsync(optionStore, platFormInstance.logger)
+  private val mcsm = Mcsm(rsync)
   fun main(args: Array<String>) {
     val argList = mutableListOf(*args)
 
@@ -31,7 +33,7 @@ class Main(
 
       optionStore.add(opt, value)
     }
-    Mcsm(optionStore).start()
+    mcsm.start()
   }
 
   private fun help() {
@@ -39,10 +41,11 @@ class Main(
     platFormInstance.logger.info("----- options -----")
     Option.entries.forEach {
       platFormInstance.logger.info(
-        "name: ${Kutil.fillStr("{$it.optName} / ${it.shortName}",20)}" +
-            " - env: ${Kutil.fillStr(it.name,15)}" +
-            " - default: ${Kutil.fillStr(it.defaultValue,10)}" +
-            " | ${it.description}"
+        "name: ${Kutil.fillStr("{$it.optName} / ${it.shortName}", 20)}" + " - env: ${
+          Kutil.fillStr(
+            it.name, 15
+          )
+        }" + " - default: ${Kutil.fillStr(it.defaultValue, 10)}" + " | ${it.description}"
       )
     }
   }

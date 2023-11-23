@@ -1,6 +1,6 @@
-package net.kigawa.mcsm.option
+package net.kigawa.mcsm.util
 
-import net.kigawa.mcsm.util.PlatFormInstance
+import net.kigawa.mcsm.Option
 
 class OptionStore(
   private val platFormInstance: PlatFormInstance,

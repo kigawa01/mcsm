@@ -29,7 +29,16 @@ class Version(
     return result
   }
 
-  fun split(): List<String> {
-    return strVersion.split(".")
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || this::class != other::class) return false
+
+    other as Version
+
+    return strVersion == other.strVersion
+  }
+
+  override fun hashCode(): Int {
+    return strVersion.hashCode()
   }
 }
