@@ -10,7 +10,7 @@ import java.nio.channels.SocketChannel
 import java.nio.charset.StandardCharsets
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class ServerSocketConnection(
+actual class SocketConnection(
   private val socketChannel: SocketChannel,
 ) : SuspendCloseable {
   private val reader = Channel<String>()

@@ -8,5 +8,5 @@ import net.kigawa.mcsm.util.io.SuspendCloseable
 expect class SocketServer(
   path: KuPath,
 ) : SuspendCloseable {
-  fun bind(): Channel<ServerSocketConnection>
+  fun bind(): Channel<SocketConnection>
 }

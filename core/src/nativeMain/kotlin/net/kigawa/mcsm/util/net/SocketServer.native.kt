@@ -6,7 +6,7 @@ import net.kigawa.mcsm.util.io.SuspendCloseable
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class SocketServer actual constructor(path: KuPath) : SuspendCloseable {
-  actual fun bind(): Channel<ServerSocketConnection> {
+  actual fun bind(): Channel<SocketConnection> {
     TODO("Not yet implemented")
   }
 

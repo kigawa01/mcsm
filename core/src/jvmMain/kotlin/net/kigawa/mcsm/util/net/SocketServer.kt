@@ -16,11 +16,11 @@ actual class SocketServer actual constructor(
 ) : SuspendCloseable {
   private val socketAddress = UnixDomainSocketAddress.of(path.javaPath())
   private val serverSocketChannel = ServerSocketChannel.open(StandardProtocolFamily.UNIX).bind(socketAddress)
-  private val conChannel = Channel<ServerSocketConnection>()
+  private val conChannel = Channel<SocketConnection>()
   private val bindTask = Coroutines.launchIo(start = CoroutineStart.LAZY) {
     try {
       while (serverSocketChannel.isOpen && isActive) {
-        conChannel.send(ServerSocketConnection(serverSocketChannel.accept()))
+        conChannel.send(SocketConnection(serverSocketChannel.accept()))
       }
 
     } finally {
@@ -29,7 +29,7 @@ actual class SocketServer actual constructor(
     }
   }
 
-  actual fun bind(): Channel<ServerSocketConnection> {
+  actual fun bind(): Channel<SocketConnection> {
     bindTask.start()
     return conChannel
   }
