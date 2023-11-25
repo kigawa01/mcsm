@@ -3,7 +3,6 @@ package net.kigawa.mcsm
 import kotlinx.coroutines.*
 import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.util.OptionStore
-import net.kigawa.mcsm.util.SignalHandler
 import net.kigawa.mcsm.util.logger.KuLogger
 
 class Mcsm(
@@ -30,16 +29,13 @@ class Mcsm(
     logger.info("start shutdown")
     rsyncTask.cancel()
     minecraftTask.cancel()
+
     rsyncTask.join()
     minecraftTask.join()
-    rsync.copyFromTarget()
-    logger.info("end shutdown")
-  }
 
-  init {
-    SignalHandler.shutdownHook {
-      shutdownTask.start()
-    }
+    rsync.copyFromTarget()
+
+    logger.info("end shutdown")
   }
 
   fun start() {

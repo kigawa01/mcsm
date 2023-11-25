@@ -9,6 +9,11 @@ import kotlin.io.path.pathString
 actual class KuPath(
   private val path: Path,
 ) {
+  actual companion object {
+    actual val separator: String
+      get() = File.separator
+  }
+
   actual constructor(strPath: String) : this(Path(strPath))
 
   actual fun join(child: String): KuPath {
@@ -23,8 +28,5 @@ actual class KuPath(
     return path.pathString
   }
 
-  actual companion object {
-    actual val separator: String
-      get() = File.separator
-  }
+  fun javaPath() = path
 }

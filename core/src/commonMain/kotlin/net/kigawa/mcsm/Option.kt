@@ -14,6 +14,8 @@ enum class Option(
   ),
   RSYNC_TARGET("target", "t", "rsync target", "target"),
   RSYNC_PERIOD("period", "p", "rsync period(s)", "30"),
+
+  SOCKET("socket", null, "process socket", "/var/lib/mcsm/run.sock"),
   ;
 
   companion object {

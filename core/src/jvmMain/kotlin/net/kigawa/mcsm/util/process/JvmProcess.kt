@@ -22,7 +22,7 @@ class JvmProcess(
     }
   }
 
-  override fun close() {
+  override suspend fun suspendClose() {
     process.destroy()
   }
 }

@@ -8,13 +8,28 @@ class Main(
   private val platFormInstance: PlatFormInstance,
 ) {
   private val optionStore = OptionStore()
-  private val mcsm = Mcsm(platFormInstance.logger, optionStore)
+  private val command = Command(optionStore, platFormInstance.logger)
   fun main(args: Array<String>) {
     platFormInstance.logger.info("start mcsm")
     val argList = mutableListOf(*args)
+    val cmd = getNextCommand(argList)
+    if (cmd == null) {
+      platFormInstance.logger.warning("need command arg")
+      platFormInstance.exitProcess(1)
+    }
+    getNextCommand(argList)?.let {
+      platFormInstance.logger.warning("command arg '$it' is not found")
+      platFormInstance.exitProcess(1)
+    }
+    if (cmd.lowercase() == "start") command.start()
+    if (cmd.lowercase() == "stop") command.stop()
+  }
 
+  private fun getNextCommand(argList: MutableList<String>): String? {
     while (argList.isNotEmpty()) {
-      val arg = argList.removeAt(0)
+      val arg = argList.removeFirst()
+
+      if (!arg.startsWith("-")) return arg
 
       val opt = Option.getOption(arg)
       if (opt == null) {
@@ -32,7 +47,7 @@ class Main(
 
       optionStore.add(opt, value)
     }
-    mcsm.start()
+    return null
   }
 
   private fun help() {
