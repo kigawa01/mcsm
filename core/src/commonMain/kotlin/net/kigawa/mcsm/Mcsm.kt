@@ -3,12 +3,13 @@ package net.kigawa.mcsm
 import kotlinx.coroutines.*
 import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.util.OptionStore
+import net.kigawa.mcsm.util.io.KuCloseable
 import net.kigawa.mcsm.util.logger.KuLogger
 
 class Mcsm(
   private val logger: KuLogger,
   optionStore: OptionStore,
-) {
+) : KuCloseable {
   private val rsync: Rsync = Rsync(optionStore, logger, this)
   private val period = optionStore.get(Option.RSYNC_PERIOD).toLong()
   private val setupTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
@@ -50,7 +51,7 @@ class Mcsm(
     }
   }
 
-  fun shutdown() {
+  override fun close() {
     shutdownTask.start()
   }
 }

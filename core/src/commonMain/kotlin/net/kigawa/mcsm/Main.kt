@@ -3,22 +3,25 @@ package net.kigawa.mcsm
 import net.kigawa.mcsm.util.Kutil
 import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.PlatFormInstance
+import net.kigawa.mcsm.util.logger.ConsoleLoggerHandler
+import net.kigawa.mcsm.util.logger.KuLogger
 
 class Main(
   private val platFormInstance: PlatFormInstance,
 ) {
   private val optionStore = OptionStore()
-  private val command = Command(optionStore, platFormInstance.logger)
+  private val logger = KuLogger(Mcsm::class, listOf(ConsoleLoggerHandler()))
+  private val command = Command(optionStore, logger)
   fun main(args: Array<String>) {
-    platFormInstance.logger.info("start mcsm")
+    logger.info("hello mcsm")
     val argList = mutableListOf(*args)
     val cmd = getNextCommand(argList)
     if (cmd == null) {
-      platFormInstance.logger.warning("need command arg")
+      logger.warning("need command arg")
       platFormInstance.exitProcess(1)
     }
     getNextCommand(argList)?.let {
-      platFormInstance.logger.warning("command arg '$it' is not found")
+      logger.warning("command arg '$it' is not found")
       platFormInstance.exitProcess(1)
     }
     if (cmd.lowercase() == "start") command.start()
@@ -33,13 +36,13 @@ class Main(
 
       val opt = Option.getOption(arg)
       if (opt == null) {
-        platFormInstance.logger.warning("option $arg is not found")
+        logger.warning("option $arg is not found")
         help()
         platFormInstance.exitProcess(1)
       }
 
       if (argList.isEmpty()) {
-        platFormInstance.logger.warning("option args not enough")
+        logger.warning("option args not enough")
         help()
         platFormInstance.exitProcess(1)
       }
@@ -51,10 +54,10 @@ class Main(
   }
 
   private fun help() {
-    platFormInstance.logger.info("mcsm")
-    platFormInstance.logger.info("----- options -----")
+    logger.info("mcsm")
+    logger.info("----- options -----")
     Option.entries.forEach {
-      platFormInstance.logger.info(
+      logger.info(
         "name: ${Kutil.fillStr("{$it.optName} / ${it.shortName}", 20)}" + " - env: ${
           Kutil.fillStr(
             it.name, 15

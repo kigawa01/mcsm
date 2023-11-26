@@ -11,7 +11,6 @@ import net.kigawa.mcsm.util.io.IoException
 import net.kigawa.mcsm.util.io.KuPath
 import net.kigawa.mcsm.util.logger.KuLogger
 import net.kigawa.mcsm.util.process.KuProcessBuilder
-import net.kigawa.mcsm.util.tryCatch
 
 class Rsync(
   optionStore: OptionStore,
@@ -24,22 +23,22 @@ class Rsync(
 
   suspend fun copyFromTarget() = copy(target, resource)
 
-  private suspend fun copy(from: KuPath, to: KuPath) = KuProcessBuilder(
-    "rsync", "-rq", "--delete",
-    "${from.strPath().removeSuffix(KuPath.separator)}/",
-    "${to.strPath().removeSuffix(KuPath.separator)}/",
-  )
-    .tryCatch(
-      { return@tryCatch it.start() },
-      { _, e: IoException ->
-        logger.warning("execute rsync failed")
-        e.message?.let { logger.warning(it) }
-        mcsm.shutdown()
-        return@tryCatch null
-      }
-    )
-    ?.tryCatch { process ->
-      logger.info("start rsync")
+  private suspend fun copy(from: KuPath, to: KuPath) {
+    val process = try {
+      KuProcessBuilder(
+        "rsync", "-rq", "--delete",
+        "${from.strPath().removeSuffix(KuPath.separator)}/",
+        "${to.strPath().removeSuffix(KuPath.separator)}/",
+      ).start()
+
+    } catch (e: IoException) {
+      logger.warning("execute rsync failed")
+      e.message?.let { logger.warning(it) }
+      mcsm.close()
+      return
+    }
+    try {
+      logger.fine("start rsync")
       CoroutineScope(Dispatchers.IO).launch {
         process.errReader().tryReadContinue {
           logger.warning(it)
@@ -47,11 +46,14 @@ class Rsync(
       }
       CoroutineScope(Dispatchers.IO).launch {
         process.reader().tryReadContinue {
-          logger.info(it)
+          logger.fine(it)
         }
       }
       process.waitFor()
-      logger.info("end rsync")
+      logger.fine("end rsync")
+    } finally {
+      process.close()
     }
+  }
 }
 

@@ -4,8 +4,6 @@ import net.kigawa.mcsm.util.PlatFormInstance
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-  val platFormInstance = PlatFormInstance(
-    JvmLogger()
-  ) { exitProcess(it) }
+  val platFormInstance = PlatFormInstance { exitProcess(it) }
   Main(platFormInstance).main(args)
 }

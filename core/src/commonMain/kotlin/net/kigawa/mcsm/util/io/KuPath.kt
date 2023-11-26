@@ -11,4 +11,7 @@ expect class KuPath(
   fun join(child: String): KuPath
   fun join(child: KuPath): KuPath
   fun strPath(): String
+  fun parent(): KuPath
+  fun createDir(): KuDirectory
+  fun toFile(): KuFile
 }

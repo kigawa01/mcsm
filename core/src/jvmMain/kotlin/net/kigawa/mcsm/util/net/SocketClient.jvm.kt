@@ -13,7 +13,7 @@ actual class SocketClient actual constructor(
   private val socketAddress = UnixDomainSocketAddress.of(path.javaPath())
   private val socketChannel = SocketChannel.open(socketAddress)
   actual fun connect(): SocketConnection {
-    socketChannel.connect(socketAddress)
+//    socketChannel.connect(socketAddress)
     return SocketConnection(socketChannel)
   }
 

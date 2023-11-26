@@ -8,7 +8,7 @@ object Coroutines {
   private val defaultContext = Dispatchers.Default
   private val defaultScope
     get() = CoroutineScope(defaultContext)
-  val ioContext = Dispatchers.IO
+  private val ioContext = Dispatchers.IO
   private val ioScope
     get() = CoroutineScope(ioContext)
 
@@ -34,10 +34,10 @@ object Coroutines {
     block: suspend CoroutineScope.() -> Unit,
   ) = ioScope.launch(context, start, block)
 
-  fun async(
+  fun <T> asyncIo(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.() -> Unit,
+    block: suspend CoroutineScope.() -> T,
   ) = ioScope.async(context, start, block)
 
   suspend fun <T> withContextIo(

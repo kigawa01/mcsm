@@ -16,7 +16,7 @@ class Command(
   private val optionStore: OptionStore,
   private val logger: KuLogger,
 ) {
-  private val socket = optionStore.get(Option.SOCKET)
+  private val socket = KuPath(optionStore.get(Option.SOCKET))
   fun start() {
     val mcsm = Mcsm(logger, optionStore)
 
@@ -25,7 +25,8 @@ class Command(
     }
     val socket = Coroutines.launchIo {
       CloseableHolder.trySuspendResource {
-        val server = SocketServer(KuPath(socket)).also { add(it) }
+        socket.parent().createDir()
+        val server = SocketServer(socket).also { add(it) }
         val channel = server.bind()
         for (con in channel) {
           readCmd(con, mcsm)
@@ -43,7 +44,7 @@ class Command(
       val writer = con.writer()
       for (line in con.reader()) {
         when (line) {
-          "stop" -> mcsm.shutdown()
+          "stop" -> mcsm.close()
           else -> writer.send("command '$line' not found")
         }
       }
@@ -53,7 +54,7 @@ class Command(
   fun stop() {
     val socket = Coroutines.launchIo {
       CloseableHolder.trySuspendResource {
-        val client = SocketClient(KuPath(socket)).also { add(it) }
+        val client = SocketClient(socket).also { add(it) }
         val con = client.connect().also { add(it) }
         val writer = con.writer()
         writer.send("stop")

@@ -1,8 +1,10 @@
 package net.kigawa.mcsm.util.io
 
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.io.path.isDirectory
 import kotlin.io.path.pathString
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -29,4 +31,16 @@ actual class KuPath(
   }
 
   fun javaPath() = path
+  actual fun parent(): KuPath {
+    return KuPath(path.parent)
+  }
+
+  actual fun createDir(): KuDirectory {
+    if (!path.isDirectory()) Files.createDirectory(path)
+    return KuDirectory(path.toFile())
+  }
+
+  actual fun toFile(): KuFile {
+    return KuFile(path.toFile())
+  }
 }
