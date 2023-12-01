@@ -6,9 +6,9 @@ import kotlin.reflect.KClass
 expect class KuLogger(
   context: KClass<*>,
   handlers: List<LoggerHandler> = listOf(),
-  level: LogLevel = LogLevel.INFO,
+  level: LogLevel? = null,
 ) {
-  val level: LogLevel
+  val level: LogLevel?
   fun info(message: String)
   fun fine(message: String)
   fun warning(message: String)

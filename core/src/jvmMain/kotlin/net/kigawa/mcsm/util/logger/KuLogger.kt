@@ -7,13 +7,13 @@ import kotlin.reflect.KClass
 actual class KuLogger actual constructor(
   context: KClass<*>,
   handlers: List<LoggerHandler>,
-  actual val level: LogLevel,
+  actual val level: LogLevel?,
 ) : Logger(context.qualifiedName, null) {
   init {
     handlers.forEach {
       addHandler(it.nativeHandler())
-      it.setLevel(level)
+      it.setLevel(level ?: LogLevel.INFO)
     }
-    setLevel(level.javaLevel())
+    setLevel(level?.javaLevel())
   }
 }
