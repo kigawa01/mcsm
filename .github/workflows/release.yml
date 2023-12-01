@@ -22,7 +22,7 @@ jobs:
       - name: Publish package
         uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
         with:
-          arguments: jar
+          arguments: test
 
       - name: marge main to develop
         id: create-pull-request
