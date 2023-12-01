@@ -6,7 +6,7 @@ import java.io.File
 actual class KuFile(
   private val nativeFile: File
 ) {
-  actual fun createFile() {
-    nativeFile.createNewFile()
+  actual fun remove() {
+    nativeFile.delete()
   }
 }

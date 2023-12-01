@@ -15,4 +15,8 @@ actual class ConsoleLoggerHandler : LoggerHandler {
   override fun nativeHandler(): Handler {
     return nativeConsoleHandler
   }
+
+  override fun setLevel(level: LogLevel) {
+    nativeConsoleHandler.level = level.javaLevel()
+  }
 }

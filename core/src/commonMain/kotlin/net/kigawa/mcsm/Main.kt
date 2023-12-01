@@ -3,16 +3,24 @@ package net.kigawa.mcsm
 import net.kigawa.mcsm.util.Kutil
 import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.PlatFormInstance
+import net.kigawa.mcsm.util.concurrent.Coroutines
 import net.kigawa.mcsm.util.logger.ConsoleLoggerHandler
 import net.kigawa.mcsm.util.logger.KuLogger
+import net.kigawa.mcsm.util.logger.LogLevel
 
 class Main(
   private val platFormInstance: PlatFormInstance,
 ) {
   private val optionStore = OptionStore()
-  private val logger = KuLogger(Mcsm::class, listOf(ConsoleLoggerHandler()))
-  private val command = Command(optionStore, logger)
+  private val logger = KuLogger(
+    Mcsm::class,
+    listOf(ConsoleLoggerHandler()),
+    LogLevel.valueOf(optionStore.get(Option.LOG_LEVEL).uppercase()),
+  )
+  private val coroutines = Coroutines(logger)
+  private val command = Command(optionStore, logger, coroutines)
   fun main(args: Array<String>) {
+    logger.info("set loglevel ${logger.level}")
     logger.info("hello mcsm")
     val argList = mutableListOf(*args)
     val cmd = getNextCommand(argList)

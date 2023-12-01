@@ -16,6 +16,7 @@ enum class Option(
   RSYNC_PERIOD("period", "p", "rsync period(s)", "30"),
 
   SOCKET("socket", null, "process socket", "/var/lib/mcsm/run.sock"),
+  LOG_LEVEL("log", "l", "log level [WARN, INFO, FINE]", "INFO"),
   ;
 
   companion object {

@@ -3,9 +3,7 @@ package net.kigawa.mcsm.util.io
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.isDirectory
-import kotlin.io.path.pathString
+import kotlin.io.path.*
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class KuPath(
@@ -42,5 +40,13 @@ actual class KuPath(
 
   actual fun toFile(): KuFile {
     return KuFile(path.toFile())
+  }
+
+  actual fun isExists(): Boolean {
+    return path.exists()
+  }
+
+  actual fun remove() {
+    path.deleteIfExists()
   }
 }

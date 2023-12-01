@@ -15,21 +15,23 @@ import net.kigawa.mcsm.util.tryCatchSuspend
 class Command(
   private val optionStore: OptionStore,
   private val logger: KuLogger,
+  private val coroutines: Coroutines,
 ) {
   private val socket = KuPath(optionStore.get(Option.SOCKET))
   fun start() {
     val mcsm = Mcsm(logger, optionStore)
 
-    val main = Coroutines.launch {
+    val main = coroutines.launchDefault {
       mcsm.start()
     }
-    val socket = Coroutines.launchIo {
+    val socket = coroutines.launchIo {
       CloseableHolder.trySuspendResource {
+        add(mcsm)
         socket.parent().createDir()
-        val server = SocketServer(socket).also { add(it) }
+        val server = SocketServer(socket, logger, coroutines).also { add(it) }
         val channel = server.bind()
         for (con in channel) {
-          readCmd(con, mcsm)
+          readCmd(con, mcsm, server)
         }
       }
     }
@@ -39,27 +41,39 @@ class Command(
     }
   }
 
-  private suspend fun readCmd(con: SocketConnection, mcsm: Mcsm) {
+  private suspend fun readCmd(con: SocketConnection, mcsm: Mcsm, socketServer: SocketServer) {
     con.tryCatchSuspend {
       val writer = con.writer()
       for (line in con.reader()) {
         when (line) {
-          "stop" -> mcsm.close()
-          else -> writer.send("command '$line' not found")
+          "stop" -> {
+            mcsm.close()
+            writer.send("shutdown mcsm")
+            con.close()
+            socketServer.close()
+          }
+
+          else -> {
+            logger.warning("command '$line' not found")
+            writer.send("command '$line' not found")
+            con.close()
+          }
         }
       }
     }
   }
 
   fun stop() {
-    val socket = Coroutines.launchIo {
+    val socket = coroutines.launchIo {
       CloseableHolder.trySuspendResource {
-        val client = SocketClient(socket).also { add(it) }
+        val client = SocketClient(socket, logger, coroutines).also { add(it) }
         val con = client.connect().also { add(it) }
+        logger.fine("connected socket")
         val writer = con.writer()
         writer.send("stop")
         for (line in con.reader()) {
           logger.info(line)
+          if (line == "shutdown mcsm") con.suspendClose()
         }
       }
       cancel()

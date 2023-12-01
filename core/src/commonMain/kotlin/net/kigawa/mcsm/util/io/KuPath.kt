@@ -14,4 +14,6 @@ expect class KuPath(
   fun parent(): KuPath
   fun createDir(): KuDirectory
   fun toFile(): KuFile
+  fun isExists(): Boolean
+  fun remove()
 }

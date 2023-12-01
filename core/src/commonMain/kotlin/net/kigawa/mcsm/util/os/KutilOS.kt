@@ -30,7 +30,7 @@ object KutilOS {
         val process = KuProcessBuilder("lsb_release", "-i").start()
         CoroutineScope(Dispatchers.IO).launch {
           process.errReader().tryReadContinue {
-            DefaultIo.printErr(it)
+            DefaultIo.error.writeLine(it)
           }
         }
         val strVersion = process.reader().tryCatch {
@@ -51,7 +51,7 @@ object KutilOS {
     val process = KuProcessBuilder("lsb_release", "-i").start()
     CoroutineScope(Dispatchers.IO).launch {
       process.errReader().tryReadContinue {
-        DefaultIo.printErr(it)
+        DefaultIo.error.writeLine(it)
       }
     }
     val id = process.reader().tryCatch {

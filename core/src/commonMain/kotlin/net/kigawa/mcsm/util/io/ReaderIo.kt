@@ -4,12 +4,12 @@ import net.kigawa.mcsm.util.tryCatch
 
 interface ReaderIo : InputIo {
   fun readLine(): String?
-  fun tryReadContinue(func: (String) -> Unit) = tryCatch {
+  suspend fun tryReadContinue(func: suspend (String) -> Unit) = tryCatch {
     readContinue(func)
   }
 
 
-  fun readContinue(func: (String) -> Unit) {
+  suspend fun readContinue(func: suspend (String) -> Unit) {
     while (true) {
       val line: String = readLine() ?: return
       func(line)
