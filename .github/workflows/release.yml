@@ -23,15 +23,3 @@ jobs:
         uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
         with:
           arguments: test
-
-      - name: marge main to develop
-        id: create-pull-request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PULL_REQUEST_URI=$(gh pr create -B develop -t auto-create-pr -b "")
-      - name: marge pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr merge ${{steps.create-pull-request.outputs.PULL_REQUEST_URI}} --merge
