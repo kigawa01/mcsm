@@ -6,15 +6,20 @@ dependencies {
 }
 val mainClassName = "net.kigawa.mcsm.MainKt"
 kotlin {
-
-  afterEvaluate {
+  jvm("jvm") {
     tasks {
 
+      jar {
+        archiveFileName.set("mcsm.jar")
+      }
+    }
+  }
+  afterEvaluate {
+    tasks {
       named("jvmJar", Jar::class) {
         duplicatesStrategy = DuplicatesStrategy.WARN
 
-        val classpath = configurations.getByName("jvmRuntimeClasspath")
-          .map { if (it.isDirectory) it else zipTree(it) }
+        val classpath = configurations.getByName("jvmRuntimeClasspath").map { if (it.isDirectory) it else zipTree(it) }
         from(classpath) {
           exclude("META-INF/*.SF")
           exclude("META-INF/*.DSA")
