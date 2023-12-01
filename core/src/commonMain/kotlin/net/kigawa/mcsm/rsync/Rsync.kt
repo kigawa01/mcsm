@@ -5,23 +5,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import net.kigawa.mcsm.Mcsm
-import net.kigawa.mcsm.Option
-import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.io.IoException
 import net.kigawa.mcsm.util.io.KuPath
 import net.kigawa.mcsm.util.logger.KuLogger
 import net.kigawa.mcsm.util.process.KuProcessBuilder
 
 class Rsync(
-  optionStore: OptionStore,
   private val logger: KuLogger,
   private val mcsm: Mcsm,
+  private val rsyncResource: KuPath,
+  private val rsyncTarget: KuPath,
 ) {
-  private val resource = KuPath(optionStore.get(Option.RSYNC_RESOURCE))
-  private val target = KuPath(optionStore.get(Option.RSYNC_TARGET))
-  suspend fun copyToTarget() = copy(resource, target)
+  suspend fun copyToTarget() = copy(rsyncResource, rsyncTarget)
 
-  suspend fun copyFromTarget() = copy(target, resource)
+  suspend fun copyFromTarget() = copy(rsyncTarget, rsyncResource)
 
   private suspend fun copy(from: KuPath, to: KuPath) {
     val process = try {

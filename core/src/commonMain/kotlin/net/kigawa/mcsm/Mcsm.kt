@@ -2,16 +2,19 @@ package net.kigawa.mcsm
 
 import kotlinx.coroutines.*
 import net.kigawa.mcsm.rsync.Rsync
-import net.kigawa.mcsm.util.OptionStore
+import net.kigawa.mcsm.servertype.ServerType
 import net.kigawa.mcsm.util.io.KuCloseable
+import net.kigawa.mcsm.util.io.KuPath
 import net.kigawa.mcsm.util.logger.KuLogger
 
 class Mcsm(
   private val logger: KuLogger,
-  optionStore: OptionStore,
+  private val rsyncPeriod: Long,
+  rsyncResource: KuPath,
+  rsyncTarget: KuPath,
+  serverType: ServerType,
 ) : KuCloseable {
-  private val rsync: Rsync = Rsync(optionStore, logger, this)
-  private val period = optionStore.get(Option.RSYNC_PERIOD).toLong()
+  private val rsync: Rsync = Rsync(logger, this, rsyncResource, rsyncTarget)
   private val setupTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
     logger.info("start setup mcsm")
     rsync.copyToTarget()
@@ -21,11 +24,17 @@ class Mcsm(
     logger.info("start rsync timer")
     while (isActive) {
       rsync.copyFromTarget()
-      delay(period * 1000)
+      delay(rsyncPeriod * 1000)
     }
     logger.info("end rsync timer")
   }
-  private val minecraftTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {}
+  private val minecraftTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
+    val server = serverType.newServer()
+    server.init()
+    while (isActive) {
+      server.start()
+    }
+  }
   private val shutdownTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
     logger.info("start shutdown")
     rsyncTask.cancel()

@@ -2,7 +2,7 @@ package net.kigawa.mcsm
 
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
-import net.kigawa.mcsm.util.OptionStore
+import net.kigawa.mcsm.servertype.ServerType
 import net.kigawa.mcsm.util.concurrent.Coroutines
 import net.kigawa.mcsm.util.io.CloseableHolder
 import net.kigawa.mcsm.util.io.KuPath
@@ -13,13 +13,16 @@ import net.kigawa.mcsm.util.net.SocketServer
 import net.kigawa.mcsm.util.tryCatchSuspend
 
 class Command(
-  private val optionStore: OptionStore,
   private val logger: KuLogger,
   private val coroutines: Coroutines,
+  private val rsyncPeriod: Long,
+  private val rsyncResource: KuPath,
+  private val rsyncTarget: KuPath,
+  private val socket: KuPath,
+  private val server: ServerType,
 ) {
-  private val socket = KuPath(optionStore.get(Option.SOCKET))
   fun start() {
-    val mcsm = Mcsm(logger, optionStore)
+    val mcsm = Mcsm(logger, rsyncPeriod, rsyncResource, rsyncTarget, server)
 
     val main = coroutines.launchDefault {
       mcsm.start()

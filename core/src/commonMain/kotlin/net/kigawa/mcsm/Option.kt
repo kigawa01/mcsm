@@ -1,6 +1,6 @@
 package net.kigawa.mcsm
 
-import net.kigawa.mcsm.servertype.ServerTypes
+import net.kigawa.mcsm.servertype.ServerType
 
 enum class Option(
   val optName: String,
@@ -8,7 +8,7 @@ enum class Option(
   val description: String,
   val defaultValue: String,
 ) {
-  SERVER_TYPE("server-type", "s", "minecraft server type", ServerTypes.PAPER.name),
+  SERVER_TYPE("server-type", "s", "minecraft server type", ServerType.PAPER.name),
   RSYNC_RESOURCE(
     "resource", "r", "rsync resource", "resource"
   ),
