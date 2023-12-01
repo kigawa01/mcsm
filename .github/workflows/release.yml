@@ -30,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         with:
-          upload_url: ${{ steps.get_url.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/libs/mcsm.jar
           asset_name: mcsm.jar
           asset_content_type: application/java-archive
