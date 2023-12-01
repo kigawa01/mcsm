@@ -6,7 +6,14 @@ dependencies {
 }
 val mainClassName = "net.kigawa.mcsm.MainKt"
 kotlin {
+  jvm("jvm") {
+    tasks {
 
+      jvmJar {
+        archiveFileName.set("mcsm.jar")
+      }
+    }
+  }
   afterEvaluate {
     tasks {
       named("jvmJar", Jar::class) {
