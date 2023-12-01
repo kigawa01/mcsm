@@ -24,17 +24,6 @@ jobs:
         with:
           arguments: jar
 
-      - name: release
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        with:
-          upload_url: ${{ needs.Make_GitHub_Release.outputs.upload_url }}
-          asset_path: ./build/libs/mcsm.jar
-          asset_name: mcsm.jar
-          asset_content_type: application/java-archive
-
       - name: marge main to develop
         id: create-pull-request
         env:
