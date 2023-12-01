@@ -28,6 +28,7 @@ class Mcsm(
   }
   private val rsyncTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
     logger.info("start rsync timer")
+    setupTask.join()
     while (isActive) {
       rsync.copyFromTarget()
       delay(rsyncPeriod * 1000)
