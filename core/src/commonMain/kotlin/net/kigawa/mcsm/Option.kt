@@ -1,5 +1,6 @@
 package net.kigawa.mcsm
 
+import net.kigawa.mcsm.server.McVersion
 import net.kigawa.mcsm.servertype.ServerType
 
 enum class Option(
@@ -9,6 +10,12 @@ enum class Option(
   val defaultValue: String,
 ) {
   SERVER_TYPE("server-type", "s", "minecraft server type", ServerType.PAPER.name),
+  SERVER_VERSION(
+    "server-version", "v", "minecraft server version", McVersion.V1_19_4.version
+  ),
+  BUILD_DIR("build-dir", "b", "build server jar dir", "./build"),
+  SERVER_DIR("server-dir", "d", "server dir", "./server"),
+
   RSYNC_RESOURCE(
     "resource", "r", "rsync resource", "resource"
   ),

@@ -1,6 +1,8 @@
 package net.kigawa.mcsm.server
 
-interface McServer {
-  fun init()
-  fun start()
+import net.kigawa.mcsm.util.io.SuspendCloseable
+
+interface McServer : SuspendCloseable {
+  suspend fun init()
+  suspend fun start()
 }

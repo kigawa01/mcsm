@@ -23,7 +23,7 @@ class CloseableHolder(closeableList: List<KuCloseable>) : SuspendCloseable {
 
     @OptIn(ExperimentalContracts::class)
     suspend inline fun <R> trySuspendResource(
-      closeableList: List<KuCloseable> = listOf(), func: CloseableHolder.() -> R
+      closeableList: List<KuCloseable> = listOf(), func: CloseableHolder.() -> R,
     ): R {
       contract {
         callsInPlace(func, InvocationKind.EXACTLY_ONCE)
@@ -39,6 +39,16 @@ class CloseableHolder(closeableList: List<KuCloseable>) : SuspendCloseable {
 
   fun <T : KuCloseable> add(closeable: T): T {
     closeableList.add(closeable)
+    return closeable
+  }
+
+  @OptIn(ExperimentalStdlibApi::class)
+  fun <T : AutoCloseable> add(closeable: T): T {
+    closeableList.add(object : KuCloseable {
+      override fun close() {
+        closeable.close()
+      }
+    })
     return closeable
   }
 

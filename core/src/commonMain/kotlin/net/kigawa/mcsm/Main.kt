@@ -25,7 +25,10 @@ class Main(
   private val rsyncTarget = KuPath(optionStore.get(Option.RSYNC_TARGET))
   private val socket = KuPath(optionStore.get(Option.SOCKET))
   private val serverType = ServerType.valueOf(optionStore.get(Option.SERVER_TYPE).uppercase())
-  private val command = Command(logger, coroutines, rsyncPeriod, rsyncResource, rsyncTarget, socket, serverType)
+  private val command = Command(
+    logger, coroutines, rsyncPeriod, rsyncResource, rsyncTarget, socket, serverType, optionStore
+  )
+
   fun main(args: Array<String>) {
     logger.info("set loglevel ${logger.level}")
     logger.info("hello mcsm")

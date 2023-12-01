@@ -24,6 +24,10 @@ actual class KuPath(
     return KuPath(path.resolve(child.path))
   }
 
+  actual fun toAbsolute(): KuPath {
+    return KuPath(path.toAbsolutePath())
+  }
+
   actual fun strPath(): String {
     return path.pathString
   }
@@ -33,7 +37,7 @@ actual class KuPath(
     return KuPath(path.parent)
   }
 
-  actual fun createDir(): KuDirectory {
+  actual fun createDirOrGet(): KuDirectory {
     if (!path.isDirectory()) Files.createDirectory(path)
     return KuDirectory(path.toFile())
   }

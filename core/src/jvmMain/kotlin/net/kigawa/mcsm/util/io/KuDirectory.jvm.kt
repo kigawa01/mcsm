@@ -4,7 +4,7 @@ import java.io.File
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class KuDirectory(
-  nativeDirectory: File
+  val nativeDirectory: File,
 ) {
   init {
     if (!nativeDirectory.isDirectory)

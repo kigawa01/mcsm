@@ -5,14 +5,14 @@ import net.kigawa.mcsm.util.concurrent.Coroutines
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual object DefaultIo {
-  actual val info: WriterIo
-  actual val error: WriterIo
+  actual val out: StringLineWriterIo
+  actual val error: StringLineWriterIo
 
   init {
     val infoChannel = Channel<String>()
     val errorChannel = Channel<String>()
 
-    info = ChannelWriterIo(infoChannel)
+    out = ChannelWriterIo(infoChannel)
     error = ChannelWriterIo(errorChannel)
 
     infoChannel.dispatchForEach(Coroutines.ioContext) {

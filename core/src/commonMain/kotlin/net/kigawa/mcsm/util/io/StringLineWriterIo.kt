@@ -1,5 +1,5 @@
 package net.kigawa.mcsm.util.io
 
-interface WriterIo {
+interface StringLineWriterIo {
   suspend fun writeLine(line: String)
 }

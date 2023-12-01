@@ -3,6 +3,7 @@ package net.kigawa.mcsm
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import net.kigawa.mcsm.servertype.ServerType
+import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.concurrent.Coroutines
 import net.kigawa.mcsm.util.io.CloseableHolder
 import net.kigawa.mcsm.util.io.KuPath
@@ -20,9 +21,10 @@ class Command(
   private val rsyncTarget: KuPath,
   private val socket: KuPath,
   private val server: ServerType,
+  private val optionStore: OptionStore,
 ) {
   fun start() {
-    val mcsm = Mcsm(logger, rsyncPeriod, rsyncResource, rsyncTarget, server)
+    val mcsm = Mcsm(logger, rsyncPeriod, rsyncResource, rsyncTarget, server, coroutines, optionStore)
 
     val main = coroutines.launchDefault {
       mcsm.start()
@@ -30,7 +32,7 @@ class Command(
     val socket = coroutines.launchIo {
       CloseableHolder.trySuspendResource {
         add(mcsm)
-        socket.parent().createDir()
+        socket.parent().createDirOrGet()
         val server = SocketServer(socket, logger, coroutines).also { add(it) }
         val channel = server.bind()
         for (con in channel) {
