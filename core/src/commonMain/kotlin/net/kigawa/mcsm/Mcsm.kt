@@ -7,8 +7,8 @@ import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.servertype.ServerType
 import net.kigawa.mcsm.util.OptionStore
 import net.kigawa.mcsm.util.concurrent.Coroutines
-import net.kigawa.mcsm.util.io.KuCloseable
 import net.kigawa.mcsm.util.io.KuPath
+import net.kigawa.mcsm.util.io.SuspendCloseable
 import net.kigawa.mcsm.util.logger.KuLogger
 
 class Mcsm(
@@ -19,7 +19,7 @@ class Mcsm(
   serverType: ServerType,
   private val coroutines: Coroutines,
   optionStore: OptionStore,
-) : KuCloseable {
+) : SuspendCloseable {
   private val rsync: Rsync = Rsync(logger, this, rsyncResource, rsyncTarget)
   private val setupTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
     logger.info("start setup mcsm")
@@ -91,7 +91,8 @@ class Mcsm(
     }
   }
 
-  override fun close() {
+  override suspend fun suspendClose() {
     shutdownTask.start()
+    shutdownTask.join()
   }
 }
