@@ -10,4 +10,8 @@ actual class KuDirectory(
     if (!nativeDirectory.isDirectory)
       throw NotDirectoryException("$nativeDirectory is not directory")
   }
+
+  actual fun toPath(): KuPath {
+    return KuPath(nativeDirectory.path)
+  }
 }

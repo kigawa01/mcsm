@@ -52,7 +52,7 @@ class Command(
       for (line in con.reader()) {
         when (line) {
           "stop" -> {
-            mcsm.close()
+            mcsm.suspendClose()
             writer.send("shutdown mcsm")
             con.close()
             socketServer.close()

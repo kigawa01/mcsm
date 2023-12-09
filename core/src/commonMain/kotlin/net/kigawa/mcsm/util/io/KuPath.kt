@@ -16,5 +16,5 @@ expect class KuPath(
   fun createDirOrGet(): KuDirectory
   fun toFile(): KuFile
   fun isExists(): Boolean
-  fun remove()
+  fun removeIfExists()
 }

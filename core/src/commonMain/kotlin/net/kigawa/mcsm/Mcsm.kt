@@ -69,7 +69,7 @@ class Mcsm(
     logger.info("start shutdown")
     isShutdown = true
     rsyncTask.cancel()
-    server.close()
+    server.suspendClose()
 
     rsyncTask.join()
     minecraftTask.join()

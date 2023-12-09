@@ -26,7 +26,7 @@ actual class SocketServer actual constructor(
   private val bindTask: Job
 
   init {
-    if (path.isExists()) path.remove()
+    if (path.isExists()) path.removeIfExists()
     try {
       serverSocketChannel = ServerSocketChannel.open(StandardProtocolFamily.UNIX).bind(socketAddress)
     } catch (e: BindException) {
