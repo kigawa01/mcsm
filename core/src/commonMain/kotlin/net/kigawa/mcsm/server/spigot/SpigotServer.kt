@@ -78,8 +78,8 @@ class SpigotServer(
           DefaultIo.error.writeLine(it)
         }
       }
-      info.join()
-      err.join()
+      process.waitFor()
+      process.suspendClose()
     }
   }
 
