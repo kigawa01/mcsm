@@ -50,7 +50,7 @@ actual class KuPath(
     return path.exists()
   }
 
-  actual fun remove() {
+  actual fun removeIfExists() {
     path.deleteIfExists()
   }
 }

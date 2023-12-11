@@ -11,6 +11,7 @@ class BufferedWriterIo(
     withContext(Coroutines.ioContext) {
       bufferedWriter.write(line)
       bufferedWriter.newLine()
+      bufferedWriter.flush()
     }
   }
 }

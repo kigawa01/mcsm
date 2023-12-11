@@ -2,7 +2,6 @@ package net.kigawa.mcsm
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import net.kigawa.mcsm.rsync.Rsync
 import net.kigawa.mcsm.servertype.ServerType
 import net.kigawa.mcsm.util.OptionStore
@@ -39,15 +38,14 @@ class Mcsm(
   private val server = serverType.newServer(optionStore, logger, coroutines)
   private val minecraftTask = CoroutineScope(Dispatchers.Default).launch(start = CoroutineStart.LAZY) {
     val countChannel = Channel<Boolean>()
-    val delayFlow = MutableStateFlow(0L)
     val countTask = coroutines.launchDefault {
       var count = 1L
       var timer = 180
       do {
         if (countChannel.receiveCatching().getOrNull() != null) {
-          count *= 2
+          count += 1
           timer = 180
-          delayFlow.emit(count)
+          if (count >= 10) suspendClose()
           continue
         }
         timer--
@@ -59,7 +57,6 @@ class Mcsm(
     setupTask.join()
     while (isActive && !isShutdown) {
       server.start()
-      delay(delayFlow.value)
       countChannel.send(true)
       countTask.start()
     }
@@ -69,7 +66,7 @@ class Mcsm(
     logger.info("start shutdown")
     isShutdown = true
     rsyncTask.cancel()
-    server.close()
+    server.suspendClose()
 
     rsyncTask.join()
     minecraftTask.join()
