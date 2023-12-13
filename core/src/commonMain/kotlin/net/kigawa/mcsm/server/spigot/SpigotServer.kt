@@ -68,15 +68,17 @@ class SpigotServer(
         .workDir(buildDIr.createDirOrGet())
         .start()
       serverConsole = process.writer()
-      val info = coroutines.launchIo {
+      coroutines.launchIo {
         process.reader().tryReadContinue {
           DefaultIo.out.writeLine(it)
         }
+        process.suspendClose()
       }
-      val err = coroutines.launchIo {
+      coroutines.launchIo {
         process.errReader().tryReadContinue {
           DefaultIo.error.writeLine(it)
         }
+        process.suspendClose()
       }
       process.waitFor()
       process.suspendClose()
