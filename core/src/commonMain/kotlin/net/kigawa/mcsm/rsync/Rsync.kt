@@ -31,7 +31,6 @@ class Rsync(
     } catch (e: IoException) {
       logger.warning("execute rsync failed")
       e.message?.let { logger.warning(it) }
-      mcsm.close()
       return
     }
     try {

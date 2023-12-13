@@ -41,14 +41,17 @@ class SpigotServer(
       process.reader().tryReadContinue {
         DefaultIo.out.writeLine(it)
       }
+      process.suspendClose()
     }
     val err = coroutines.launchIo {
       process.errReader().tryReadContinue {
         DefaultIo.error.writeLine(it)
       }
+      process.suspendClose()
     }
-    info.join()
-    err.join()
+    process.waitFor()
+    serverConsole = null
+    process.suspendClose()
   }
 
   override suspend fun init() {
@@ -67,7 +70,6 @@ class SpigotServer(
       )
         .workDir(buildDIr.createDirOrGet())
         .start()
-      serverConsole = process.writer()
       coroutines.launchIo {
         process.reader().tryReadContinue {
           DefaultIo.out.writeLine(it)
@@ -91,7 +93,7 @@ class SpigotServer(
   }
 
   override suspend fun suspendClose() {
-    serverConsole!!.writeLine("stop")
+    serverConsole?.writeLine("stop")
     serverJob.join()
   }
 }
